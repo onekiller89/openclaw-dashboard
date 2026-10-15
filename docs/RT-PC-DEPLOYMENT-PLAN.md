@@ -1,5 +1,7 @@
 # Proposed RT-PC dashboard deployment — approval required
 
+Current status: application commit `715d7c826dbdc000759d29a9088c69909bd116ff` was explicitly approved, deployed and verified on 15 October 2026. See [receipt](RT-PC-DEPLOYMENT-RECEIPT.md). The preparation/plan narrative below is historical, including any earlier pending-approval or non-deployed wording.
+
 This plan has not been executed. Substitute only the exact reviewed tip recorded in the final review receipt. It changes dashboard code and performs one service stop/start cycle; it does not change the service unit, environment, credentials, MFA, network settings, gateway, cron configuration or other services. Do not run `install.sh`.
 
 ## Preflight, while current service remains running

@@ -1,5 +1,7 @@
 # RT-PC dashboard candidate - 15 October 2026
 
+Current status: application commit `715d7c826dbdc000759d29a9088c69909bd116ff` was explicitly approved, deployed and verified on 15 October 2026. See [receipt](RT-PC-DEPLOYMENT-RECEIPT.md). The preparation/plan narrative below is historical, including any earlier pending-approval or non-deployed wording.
+
 Production remains at `4243f4505f8669d30638893b439476affe56bc0d` plus the original local hardening patch. No deployment or restart occurred. Upstream candidate base is `b08c0b7cd4f6172c5824dff4e643b0b7950ca603`; previous preservation commit is `3fc7c9a730e8a9d68ad86ca5c3900a83d76a79d1`.
 
 ## Exact scope of the safety patch

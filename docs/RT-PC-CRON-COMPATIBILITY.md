@@ -1,5 +1,7 @@
 # Dashboard offline UI / cron compatibility follow-up
 
+Current status: application commit `715d7c826dbdc000759d29a9088c69909bd116ff` was explicitly approved, deployed and verified on 15 October 2026. See [receipt](RT-PC-DEPLOYMENT-RECEIPT.md). The preparation/plan narrative below is historical, including any earlier pending-approval or non-deployed wording.
+
 Scope: isolated `/home/aaa/openclaw-dashboard-portfolio-20261015`, following reviewed `bd1f3aea8968b06bbe3d4c165af3a0ac795c2054`. No live checkout, service, credential, job or scheduler configuration changed. Final commit/review receipt is recorded in the handoff.
 
 Removed navigation, page forms and client fetch/action handlers for unavailable raw-config, Docker and System Security features. Existing account security/MFA and notification panel/polling remain. Server-side rejection stays authoritative; hiding UI does not grant access.

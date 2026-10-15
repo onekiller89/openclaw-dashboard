@@ -2,7 +2,7 @@
 
 # OpenClaw Agent Dashboard
 
-RT-PC candidate status (15 October 2026): see [deployment evidence and gate](docs/RT-PC-DEPLOYMENT.md). This branch is staged and has not been deployed.
+RT-PC deployment status (15 October 2026): reviewed application commit `715d7c8` is deployed. See [deployment receipt](docs/RT-PC-DEPLOYMENT-RECEIPT.md) for scope, validation and remaining limitations.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-v18+-green.svg)](https://nodejs.org/)
