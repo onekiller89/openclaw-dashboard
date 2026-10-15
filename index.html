@@ -898,7 +898,7 @@ body {
 @media (max-width: 768px) {
   .sidebar {
     width: 100vw;
-    height: auto;
+    height: 76px;
     bottom: 0;
     top: auto;
     left: 0;
@@ -912,15 +912,24 @@ body {
   .sidebar:hover {
     width: 100vw;
   }
+  .sidebar:hover .nav { padding: 0; }
+  .sidebar:hover .nav-item { justify-content: center; padding: 8px 12px; }
+  .sidebar > div:last-child { flex: 0 0 60px; margin-top: 0 !important; padding: 4px !important; }
+  .sidebar #mfaStatusIndicator { display: none !important; }
+  .notif-panel { max-width: calc(100vw - 32px); }
+  .metric, .card { min-width: 0; }
   .sidebar-header {
     display: none;
   }
   .nav {
+    display: flex;
+    flex: 1;
+    min-width: 0;
     flex-direction: row;
     padding: 0;
     overflow-x: auto;
     width: 100%;
-    justify-content: space-around;
+    justify-content: flex-start;
   }
   .nav-item {
     flex-direction: column;
@@ -933,19 +942,20 @@ body {
     font-size: 20px;
   }
   .nav-text {
+    display: block;
     opacity: 1;
     font-size: 10px;
   }
   .main {
     margin-left: 0;
-    margin-bottom: 80px;
+    margin-bottom: 120px;
     padding: 16px;
   }
   .page-title {
     font-size: 24px;
   }
-  .grid-4, .grid-3, .grid-2 {
-    grid-template-columns: 1fr !important;
+  .grid, .grid-4, .grid-3, .grid-2 {
+    grid-template-columns: minmax(0, 1fr) !important;
   }
   .system-grid {
     grid-template-columns: repeat(2, 1fr) !important;
@@ -964,7 +974,7 @@ body {
     font-size: 10px;
     padding: 0 12px;
     height: 32px;
-    bottom: 52px;
+    bottom: 76px;
   }
   .status-bar-section {
     gap: 8px;
@@ -3128,6 +3138,7 @@ let notificationsEnabled = false;
 document.querySelectorAll('.nav-item').forEach(item => {
   item.addEventListener('click', () => {
     const page = item.dataset.page;
+    if (!page) return; // Logout has its own handler; it is not a page.
     if (page === 'security' && !sysSecAuthed) { showReauthModal(page); return; }
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     item.classList.add('active');
