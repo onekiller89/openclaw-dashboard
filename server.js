@@ -1476,6 +1476,31 @@ const server = http.createServer((req, res) => {
   res.setHeader('Expires', '0');
   const ip = getClientIP(req);
 
+  // Reserve only routes introduced after the RT-PC production baseline.
+  // Canonicalize for denial, never for dispatching or enabling a handler.
+  let reservedPath = req.url;
+  if (/^https?:\/\//i.test(reservedPath)) {
+    try { reservedPath = new URL(reservedPath).pathname; } catch {}
+  }
+  reservedPath = reservedPath.split(/[?#]/, 1)[0];
+  for (let i = 0; i < 3; i++) {
+    try {
+      const decoded = decodeURIComponent(reservedPath);
+      if (decoded === reservedPath) break;
+      reservedPath = decoded;
+    } catch { break; }
+  }
+  reservedPath = path.posix.normalize('/' + reservedPath.replace(/\\/g, '/')
+    .split('/').map(segment => segment.split(';', 1)[0]).join('/')).toLowerCase();
+  const unavailablePaths = ['/api/openclaw-config', '/api/docker', '/api/sys-security'];
+  if (unavailablePaths.some(base => reservedPath === base || reservedPath.startsWith(base + '/'))) {
+    if (!requireAuth(req, res)) return;
+    setSameSiteCORS(req, res);
+    res.writeHead(403, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'This control is unavailable in this deployment.', code: 'CONTROL_UNAVAILABLE' }));
+    return;
+  }
+
   if (req.method === 'OPTIONS') {
     setSameSiteCORS(req, res);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -1861,16 +1886,6 @@ const server = http.createServer((req, res) => {
     if (!requireAuth(req, res)) return;
     setSameSiteCORS(req, res);
 
-    // These controls were introduced after the deployed RT-PC baseline.
-    // Keep them unavailable server-side until their scope is separately reviewed.
-    // Successful login or /api/reauth must not enable them implicitly.
-    const apiPath = req.url.split('?')[0];
-    if (apiPath === '/api/openclaw-config' || apiPath === '/api/docker/action') {
-      res.writeHead(403, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'This control is unavailable in this deployment.', code: 'CONTROL_UNAVAILABLE' }));
-      return;
-    }
-
     if (req.url === '/api/sessions') {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(getSessionsJson()));
@@ -2013,38 +2028,6 @@ const server = http.createServer((req, res) => {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ events }));
       } catch(e) { res.writeHead(200, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ events: [] })); }
-      return;
-    }
-    if (req.url === '/api/docker') {
-      if (!requireAuth(req, res)) return;
-      const { execSync } = require('child_process');
-      const run = (cmd) => { try { return execSync(cmd, { timeout: 10000 }).toString(); } catch(e) { return e.stdout ? e.stdout.toString() : 'Error: ' + e.message; } };
-      try {
-        const containers = JSON.parse(run('docker ps -a --format "{{json .}}" | jq -s "."') || '[]');
-        const images = JSON.parse(run('docker images --format "{{json .}}" | jq -s "."') || '[]');
-        const system = run('docker system df 2>&1');
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ containers, images, system }));
-      } catch(e) {
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ containers: [], images: [], system: 'Docker not available: ' + e.message }));
-      }
-      auditLog('docker_view', ip, {});
-      return;
-    }
-    if (req.url === '/api/sys-security') {
-      const { execSync } = require('child_process');
-      const run = (cmd) => { try { return execSync(cmd, { timeout: 10000 }).toString().replace(/</g, '&lt;').replace(/>/g, '&gt;'); } catch(e) { return e.stdout ? e.stdout.toString().replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'Error: ' + e.message; } };
-      const data = {
-        ufw: run('ufw status verbose 2>&1'),
-        ports: run('ss -ltnp 2>&1'),
-        fail2ban: run('fail2ban-client status 2>&1 && echo "---" && fail2ban-client status sshd 2>&1'),
-        ssh: run('journalctl -u ssh --no-pager -n 50 --grep="Failed\\|Invalid\\|Accepted" 2>&1 || journalctl -u sshd --no-pager -n 50 --grep="Failed\\|Invalid\\|Accepted" 2>&1'),
-        audit: run('openclaw security audit 2>&1'),
-      };
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(data));
-      auditLog('sys_security_view', ip, {});
       return;
     }
     if (req.url === '/api/claude-usage-scrape' && req.method === 'POST') {

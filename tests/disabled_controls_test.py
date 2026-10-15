@@ -83,6 +83,7 @@ for (const name of ['exec', 'execSync', 'spawn', 'spawnSync', 'execFile', 'execF
             assert token
             assert request("/")[0] == 200
             assert request("/api/health")[0] == 200
+            assert request("/api/config", "OPTIONS")[0] == 204
             for path in ("/api/config", "/api/sessions", "/api/crons", "/api/notifications"):
                 assert request(path, token=token)[0] == 200
             checks.append("legacy landing/health/authenticated reads and notifications work")
@@ -99,6 +100,21 @@ for (const name of ['exec', 'execSync', 'spawn', 'spawnSync', 'execFile', 'execF
                     assert status == 403 and json.loads(data)["code"] == "CONTROL_UNAVAILABLE"
                     count += 1
             checks.append(str(count) + " authenticated mutation/config method/query cases rejected (403)")
+            variants = (
+                "/api/openclaw-config/", "/api//openclaw-config", "/api/%6fpenclaw-config",
+                "/api/openclaw-config;variant", "/api/openclaw-config/./",
+                "/api/other/../openclaw-config", "/api/openclaw-config#fragment",
+                "/API/OPENCLAW-CONFIG", "/api%2Fdocker%2Faction",
+                "/api%252Fdocker%252Faction", "/api/docker/action/", "/api/docker/action;variant",
+                "//api/openclaw-config", "http://localhost/api/openclaw-config",
+                "/api/docker", "/api/docker/", "/api/sys-security", "/api/sys-security/",
+            )
+            for path in variants:
+                for method in ("GET", "HEAD", "OPTIONS"):
+                    status, _ = request(path, method, token=token)
+                    assert status == 403, (path, method, status)
+                assert request(path, "OPTIONS")[0] == 401
+            checks.append("54 authenticated canonical-path/HEAD/OPTIONS cases rejected; 18 unauthenticated preflights remain 401")
             assert request("/api/reauth", "POST", {"password": password}, token)[0] == 200
             assert request("/api/openclaw-config", "PUT", {"config": "{}"}, token)[0] == 403
             assert request("/api/docker/action", "POST", {"action": "prune-images"}, token)[0] == 403
