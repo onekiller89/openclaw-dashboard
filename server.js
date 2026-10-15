@@ -1088,37 +1088,7 @@ function formatLiveEvent(data) {
   return null;
 }
 
-function getCronJobs() {
-  try {
-    if (!fs.existsSync(cronFile)) return [];
-    const data = JSON.parse(fs.readFileSync(cronFile, 'utf8'));
-    return (data.jobs || []).map(j => {
-      let humanSchedule = j.schedule?.expr || '';
-      try {
-        const parts = humanSchedule.split(' ');
-        if (parts.length === 5) {
-          const [min, hour, dom, mon, dow] = parts;
-          const dowNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-          let readable = '';
-          if (dow !== '*') readable = dowNames[parseInt(dow)] || dow;
-          if (hour !== '*' && min !== '*') readable += (readable ? ' ' : '') + `${hour.padStart(2,'0')}:${min.padStart(2,'0')}`;
-          if (j.schedule?.tz) readable += ` (${j.schedule.tz.split('/').pop()})`;
-          if (readable) humanSchedule = readable;
-        }
-      } catch {}
-      return {
-        id: j.id,
-        name: j.name || j.id.substring(0, 8),
-        schedule: humanSchedule,
-        enabled: j.enabled !== false,
-        lastStatus: j.state?.lastStatus || 'unknown',
-        lastRunAt: j.state?.lastRunAtMs || 0,
-        nextRunAt: j.state?.nextRunAtMs || 0,
-        lastDuration: j.state?.lastDurationMs || 0
-      };
-    });
-  } catch { return []; }
-}
+const getCronJobs = require('./cron-reader').createCronReader(OPENCLAW_DIR);
 
 function getGitActivity() {
   try {
@@ -1962,8 +1932,13 @@ const server = http.createServer((req, res) => {
       return;
     }
     if (req.url === '/api/crons') {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(getCronJobs()));
+      getCronJobs().then(inventory => {
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+        res.end(JSON.stringify(inventory));
+      }).catch(() => {
+        res.writeHead(503, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+        res.end(JSON.stringify({ status: 'unavailable', jobs: [], message: 'Current cron inventory unavailable.' }));
+      });
       return;
     }
     if (req.url === '/api/git') {

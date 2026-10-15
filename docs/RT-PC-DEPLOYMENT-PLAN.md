@@ -33,7 +33,7 @@ Expected interruption: roughly 10–30 seconds, with a 60-second recovery budget
 - Within 30 seconds require service active/running, expected loopback listener, landing/health/auth-status HTTP 200 and legacy unauthenticated config HTTP 401; auth registration boolean must match baseline. Do not print response bodies containing private data.
 - Require the reviewed commit at live HEAD, clean tracked checkout, exact expected code hashes and no new unexpected restart loop. Capture only safe service/status metadata.
 - Record deployed full hash, old hash, preserved patch hash, timestamps, HTTP results, listener scope, outage duration, test receipt and remaining legacy-cron compatibility limitation. Perform a bounded five-minute stability check with ordinary read-only status requests; do not execute control endpoints.
-- Scope review must acknowledge that newer read-only notifications/reauth/UI changes remain upstream, while raw-config, Docker subtree and System Security probe routes are disabled. The UI may still show controls that return unavailable. Live legacy cron display remains unreliable against migrated state; do not claim it fixed.
+- Scope review must acknowledge that newer read-only notifications/reauth/UI changes remain upstream, while raw-config, Docker subtree and System Security probe routes are disabled. The unavailable config/Docker/System Security pages and action handlers have been removed from the UI. Cron inventory is read-only and explicitly distinguishes a current gateway read, an unverified legacy snapshot, and unavailable current inventory. Do not claim live scheduler visibility until the supported CLI succeeds in the service environment. See RT-PC-CRON-COMPATIBILITY.md.
 
 ## Recovery / rollback
 

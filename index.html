@@ -1413,18 +1413,6 @@ body.light-theme ::selection { background: rgba(99,102,241,0.2); }
         <span class="icon">🔒</span>
         <span class="nav-text">Security</span>
       </div>
-      <div class="nav-item" data-page="sys-security">
-        <span class="icon">🛡️</span>
-        <span class="nav-text">Sys Security</span>
-      </div>
-      <div class="nav-item" data-page="config-editor">
-        <span class="icon">⚙️</span>
-        <span class="nav-text">Config</span>
-      </div>
-      <div class="nav-item" data-page="docker">
-        <span class="icon">🐳</span>
-        <span class="nav-text">Docker</span>
-      </div>
     </nav>
     <div style="padding:16px;border-top:1px solid var(--border);margin-top:auto;">
       <div id="mfaStatusIndicator" style="padding:4px 8px;margin-bottom:8px;font-size:10px;text-align:center;border-radius:6px;display:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
@@ -2130,87 +2118,6 @@ body.light-theme ::selection { background: rgba(99,102,241,0.2); }
           <button onclick="cancelMFASetup()" style="padding:12px 24px;background:var(--bg-tertiary);color:var(--text-secondary);border:1px solid var(--border);border-radius:8px;font-weight:600;cursor:pointer;font-size:14px;margin-left:12px;">
             Cancel
           </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="page" id="sys-security">
-      <div class="page-header">
-        <h1 class="page-title">System Security</h1>
-        <p class="page-subtitle">Firewall, ports, fail2ban and SSH monitoring</p>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-        <div class="card">
-          <div class="card-title">🔥 Firewall (UFW)</div>
-          <pre id="secUfw" style="font-size:12px;max-height:300px;overflow-y:auto;white-space:pre-wrap;">Loading...</pre>
-        </div>
-        <div class="card">
-          <div class="card-title">🚪 Open Ports</div>
-          <pre id="secPorts" style="font-size:12px;max-height:300px;overflow-y:auto;white-space:pre-wrap;">Loading...</pre>
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-        <div class="card">
-          <div class="card-title">🛡️ Fail2ban Status</div>
-          <pre id="secF2b" style="font-size:12px;max-height:300px;overflow-y:auto;white-space:pre-wrap;">Loading...</pre>
-        </div>
-        <div class="card">
-          <div class="card-title">🔑 Failed SSH Logins (last 50)</div>
-          <pre id="secSsh" style="font-size:12px;max-height:300px;overflow-y:auto;white-space:pre-wrap;">Loading...</pre>
-        </div>
-      </div>
-      <div class="card" style="margin-top:16px;">
-        <div class="card-title">🔍 OpenClaw Security Audit</div>
-        <pre id="secAudit" style="font-size:12px;max-height:400px;overflow-y:auto;white-space:pre-wrap;">Loading...</pre>
-      </div>
-    </div>
-
-    <div class="page" id="config-editor">
-      <div class="page-header">
-        <h1 class="page-title">Config Editor</h1>
-        <p class="page-subtitle">Edit OpenClaw configuration</p>
-      </div>
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <div class="card-title" style="margin:0;">📝 openclaw.json</div>
-          <div style="display:flex;gap:8px;">
-            <button onclick="loadConfig()" style="padding:8px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);cursor:pointer;font-size:13px;">↻ Reload</button>
-            <button onclick="saveConfig()" id="configSaveBtn" style="padding:8px 16px;background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:13px;">💾 Save & Restart</button>
-          </div>
-        </div>
-        <div id="configError" style="display:none;color:var(--red);font-size:12px;margin-bottom:12px;padding:10px;background:rgba(239,68,68,0.1);border-radius:6px;border:1px solid rgba(239,68,68,0.3);"></div>
-        <div id="configSuccess" style="display:none;color:var(--green);font-size:12px;margin-bottom:12px;padding:10px;background:rgba(16,185,129,0.1);border-radius:6px;border:1px solid rgba(16,185,129,0.3);"></div>
-        <textarea id="configTextarea" spellcheck="false" style="width:100%;min-height:500px;padding:16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.5;resize:vertical;tab-size:2;" placeholder="Loading..."></textarea>
-        <div style="margin-top:8px;font-size:11px;color:var(--text-muted);">⚠️ Saving will create a backup and restart the OpenClaw gateway. Be careful with changes.</div>
-      </div>
-    </div>
-
-    <div class="page" id="docker">
-      <div class="page-header">
-        <h1 class="page-title">Docker</h1>
-        <p class="page-subtitle">Containers, images and system info</p>
-      </div>
-      <div class="card" style="margin-bottom:16px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <div class="card-title" style="margin:0;">📦 Containers</div>
-          <div style="display:flex;gap:8px;">
-            <button onclick="dockerAction('prune-containers')" style="padding:6px 14px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--red);cursor:pointer;font-size:12px;">🗑 Prune Stopped</button>
-            <button onclick="loadDocker()" style="padding:6px 14px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);cursor:pointer;font-size:12px;">↻ Refresh</button>
-          </div>
-        </div>
-        <div id="dockerContainers" style="overflow-x:auto;"><div style="color:var(--text-muted);font-size:13px;">Loading...</div></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-            <div class="card-title" style="margin:0;">💿 Images</div>
-            <button onclick="dockerAction('prune-images')" style="padding:6px 14px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--red);cursor:pointer;font-size:12px;">🗑 Prune Unused</button>
-          </div>
-          <div id="dockerImages" style="overflow-x:auto;"><div style="color:var(--text-muted);font-size:13px;">Loading...</div></div>
-        </div>
-        <div class="card">
-          <div class="card-title">📊 System</div>
-          <pre id="dockerSystem" style="font-size:12px;max-height:300px;overflow-y:auto;white-space:pre-wrap;">Loading...</pre>
         </div>
       </div>
     </div>
@@ -3221,7 +3128,7 @@ let notificationsEnabled = false;
 document.querySelectorAll('.nav-item').forEach(item => {
   item.addEventListener('click', () => {
     const page = item.dataset.page;
-    if ((page === 'sys-security' || page === 'security' || page === 'config-editor') && !sysSecAuthed) { showReauthModal(page); return; }
+    if (page === 'security' && !sysSecAuthed) { showReauthModal(page); return; }
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     item.classList.add('active');
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -4535,17 +4442,52 @@ function renderHealthSparklines() {
   renderSparkline('diskSparkline', 'disk', 'var(--purple)');
 }
 
-async function fetchNewData() {
+// Cron inventory rendering: read-only and never show a failed read as empty/live.
+function cronEscape(value) {
+  return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function renderCronInventory(inventory) {
+  if (!inventory || !Array.isArray(inventory.jobs) ||
+      !['current', 'legacy-snapshot', 'unavailable'].includes(inventory.status)) throw new Error('Invalid cron response');
+  const panel = document.getElementById('cronJobs');
+  if (inventory.status === 'unavailable') {
+    panel.innerHTML = '<div class="empty-state-text" role="status">Current cron inventory unavailable. Job count and schedules are unverified.</div>';
+    return;
+  }
+  const current = inventory.status === 'current';
+  const heading = current ? 'Current gateway inventory · read-only' : 'Legacy file snapshot · current scheduling unverified · read-only';
+  const checked = Number.isFinite(inventory.checkedAt) ? new Date(inventory.checkedAt).toLocaleString() : 'unknown';
+  panel.innerHTML = '<div role="status" style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">' + heading + '<br>Read at ' + cronEscape(checked) + '</div>' +
+    inventory.jobs.map(c => {
+      const enabled = c.enabled === true ? 'Enabled' : c.enabled === false ? 'Disabled' : 'Unknown';
+      const next = Number.isFinite(c.nextRunAt) && c.nextRunAt > 0 ? new Date(c.nextRunAt).toLocaleString() : 'unknown';
+      const duration = Number.isFinite(c.lastDuration) && c.lastDuration >= 0 ? (c.lastDuration / 1000).toFixed(1) + 's' : 'unknown';
+      return '<div style="padding:10px 0;border-bottom:1px solid var(--border);"><strong>' + cronEscape(c.name) + '</strong> · ' + enabled +
+        '<div class="mono" style="font-size:11px;">' + cronEscape(c.schedule) + '</div><div style="font-size:11px;color:var(--text-muted);">' +
+        (current ? '' : 'Snapshot: ') + 'Last status: ' + cronEscape(c.lastStatus) + ' · Next recorded: ' + cronEscape(next) + ' · Duration: ' + cronEscape(duration) + '</div></div>';
+    }).join('') + (inventory.jobs.length ? '' : '<div class="empty-state-text">' + (current ? 'No current cron jobs returned by gateway.' : 'No jobs in legacy snapshot; current inventory remains unverified.') + '</div>');
+}
+async function fetchCronInventory() {
   try {
-    const [cronsRes, gitRes, svcRes, memRes, tokRes, rtRes] = await Promise.all([
-      authFetch(API_BASE + '/api/crons'),
+    const response = await authFetch(API_BASE + '/api/crons');
+    if (!response.ok) throw new Error('Cron read failed');
+    renderCronInventory(await response.json());
+  } catch {
+    renderCronInventory({status:'unavailable', jobs:[]});
+  }
+}
+// End cron inventory rendering.
+
+async function fetchNewData() {
+  fetchCronInventory();
+  try {
+    const [gitRes, svcRes, memRes, tokRes, rtRes] = await Promise.all([
       authFetch(API_BASE + '/api/git'),
       authFetch(API_BASE + '/api/services'),
       authFetch(API_BASE + '/api/memory'),
       authFetch(API_BASE + '/api/tokens-today'),
       authFetch(API_BASE + '/api/response-time')
     ]);
-    const crons = await cronsRes.json();
     const git = await gitRes.json();
     const services = await svcRes.json();
     const memFiles = await memRes.json();
@@ -4566,37 +4508,6 @@ async function fetchNewData() {
     }).join('') || '<div class="empty-state-text">No services</div>';
 
     const now = Date.now();
-    document.getElementById('cronJobs').innerHTML = crons.map(c => {
-      const statusIcon = c.lastStatus === 'ok' ? '✅' : c.lastStatus === 'unknown' ? '⚪' : '❌';
-      const nextAgo = c.nextRunAt > now ? formatTimeAgo(c.nextRunAt - now, true) : '--';
-      const toggleColor = c.enabled ? 'var(--green)' : 'var(--text-muted)';
-      const toggleBg = c.enabled ? 'rgba(16,185,129,0.2)' : 'var(--bg-tertiary)';
-      return `<div style="padding:10px 0;border-bottom:1px solid var(--border);">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <span style="font-weight:600;font-size:13px;flex:1;">${statusIcon} ${c.name}</span>
-          <button onclick="window.toggleCronJob('${c.id}')" style="padding:2px 8px;background:${toggleBg};color:${toggleColor};border:1px solid var(--border);border-radius:4px;font-size:10px;font-weight:600;cursor:pointer;margin-right:4px;">${c.enabled ? 'ON' : 'OFF'}</button>
-          <button onclick="window.runCronJob('${c.id}')" style="padding:2px 8px;background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border);border-radius:4px;font-size:10px;cursor:pointer;">▶</button>
-        </div>
-        <span class="mono" style="font-size:11px;color:var(--text-muted);">${c.schedule}</span>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Next: ${c.enabled ? nextAgo : 'disabled'} · Last: ${c.lastDuration ? (c.lastDuration / 1000).toFixed(0) + 's' : '--'}</div>
-      </div>`;
-    }).join('') || '<div class="empty-state-text">No cron jobs</div>';
-
-// Cron management
-window.toggleCronJob = async function(id) {
-  try {
-    await authFetch(`/api/cron/${id}/toggle`, { method: 'POST' });
-    await fetchNewData();
-  } catch {}
-};
-
-window.runCronJob = async function(id) {
-  try {
-    await authFetch(`/api/cron/${id}/run`, { method: 'POST' });
-    sendNotification('Cron Job Started', `Running cron job ${id.substring(0, 8)}...`);
-  } catch {}
-};
-
     document.getElementById('gitActivity').innerHTML = git.map(c => {
       const age = now - c.timestamp;
       const ago = age < 3600000 ? Math.round(age/60000)+'m ago' : age < 86400000 ? Math.round(age/3600000)+'h ago' : Math.round(age/86400000)+'d ago';
@@ -5462,21 +5373,9 @@ function toggleTheme() {
   }
 })();
 
-async function fetchSysSecurity() {
-  try {
-    const res = await authFetch(API_BASE + '/api/sys-security');
-    const data = await res.json();
-    document.getElementById('secUfw').innerHTML = data.ufw || 'N/A';
-    document.getElementById('secPorts').innerHTML = data.ports || 'N/A';
-    document.getElementById('secF2b').innerHTML = data.fail2ban || 'N/A';
-    document.getElementById('secSsh').innerHTML = data.ssh || 'N/A';
-    document.getElementById('secAudit').innerHTML = data.audit || 'N/A';
-  } catch(e) { showToast('Security fetch error: ' + e.message, 'warning'); }
-}
-
-let reauthTargetPage = 'sys-security';
+let reauthTargetPage = 'security';
 function showReauthModal(targetPage) {
-  reauthTargetPage = targetPage || 'sys-security';
+  reauthTargetPage = targetPage || 'security';
   let overlay = document.getElementById('reauthOverlay');
   if (!overlay) {
     overlay = document.createElement('div');
@@ -5484,7 +5383,7 @@ function showReauthModal(targetPage) {
     overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:600;display:flex;align-items:center;justify-content:center;';
     overlay.innerHTML = '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:32px;max-width:380px;width:90%;">' +
       '<h3 style="margin-bottom:8px;">🔒 Re-authentication Required</h3>' +
-      '<p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;">Enter your credentials to access System Security.</p>' +
+      '<p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;">Enter your credentials to access account security.</p>' +
       '<input type="password" id="reauthPass" placeholder="Password" style="width:100%;padding:12px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);font-size:14px;margin-bottom:12px;">' +
       '<input type="text" id="reauthTotp" placeholder="Authenticator Code (if enabled)" style="width:100%;padding:12px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);font-size:14px;margin-bottom:12px;font-family:JetBrains Mono,monospace;" maxlength="6" autocomplete="one-time-code">' +
       '<div id="reauthError" style="display:none;color:var(--red);font-size:12px;margin-bottom:12px;padding:8px;background:rgba(239,68,68,0.1);border-radius:6px;"></div>' +
@@ -5524,102 +5423,13 @@ async function submitReauth() {
     document.querySelector('[data-page="' + reauthTargetPage + '"]').classList.add('active');
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(reauthTargetPage).classList.add('active');
-    if (reauthTargetPage === 'sys-security') fetchSysSecurity();
-    if (reauthTargetPage === 'config-editor') loadConfig();
 
   } catch(e) { errEl.textContent = 'Error: ' + e.message; errEl.style.display = 'block'; }
-}
-
-async function loadConfig() {
-  const ta = document.getElementById('configTextarea');
-  const errEl = document.getElementById('configError');
-  const sucEl = document.getElementById('configSuccess');
-  errEl.style.display = 'none';
-  sucEl.style.display = 'none';
-  ta.value = 'Loading...';
-  try {
-    const res = await authFetch(API_BASE + '/api/openclaw-config');
-    const data = await res.json();
-    if (data.error) { errEl.textContent = data.error; errEl.style.display = 'block'; return; }
-    ta.value = JSON.stringify(JSON.parse(data.config), null, 2);
-  } catch(e) { errEl.textContent = 'Failed to load: ' + e.message; errEl.style.display = 'block'; }
-}
-
-async function saveConfig() {
-  const ta = document.getElementById('configTextarea');
-  const errEl = document.getElementById('configError');
-  const sucEl = document.getElementById('configSuccess');
-  errEl.style.display = 'none';
-  sucEl.style.display = 'none';
-  try {
-    JSON.parse(ta.value);
-  } catch(e) { errEl.textContent = 'Invalid JSON: ' + e.message; errEl.style.display = 'block'; return; }
-  if (!confirm('Save config and restart OpenClaw gateway?')) return;
-  try {
-    const res = await authFetch(API_BASE + '/api/openclaw-config', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ config: ta.value })
-    });
-    const data = await res.json();
-    if (data.error) { errEl.textContent = data.error; errEl.style.display = 'block'; return; }
-    sucEl.textContent = '✅ Config saved. Backup: ' + data.backup + '. Gateway restarting...';
-    sucEl.style.display = 'block';
-    showToast('Config saved, gateway restarting...', 'success');
-  } catch(e) { errEl.textContent = 'Save failed: ' + e.message; errEl.style.display = 'block'; }
 }
 
 function cancelReauth() {
   document.getElementById('reauthOverlay').style.display = 'none';
   document.querySelector('[data-page="overview"]').click();
-}
-
-document.querySelectorAll('.nav-item').forEach(item => {
-  item.addEventListener('click', () => {
-    if (item.dataset.page === 'sys-security' && sysSecAuthed) fetchSysSecurity();
-    if (item.dataset.page === 'config-editor' && sysSecAuthed) loadConfig();
-    if (item.dataset.page === 'docker') loadDocker();
-  });
-});
-
-async function loadDocker() {
-  try {
-    const res = await authFetch(API_BASE + '/api/docker');
-    const data = await res.json();
-    const ce = document.getElementById('dockerContainers');
-    if (data.containers && data.containers.length) {
-      ce.innerHTML = '<table style="width:100%;font-size:12px;border-collapse:collapse;">' +
-        '<tr style="border-bottom:1px solid var(--border);"><th style="text-align:left;padding:6px;">Name</th><th style="text-align:left;padding:6px;">Image</th><th style="text-align:left;padding:6px;">Status</th><th style="text-align:left;padding:6px;">Ports</th><th style="padding:6px;">Actions</th></tr>' +
-        data.containers.map(c => {
-          const running = c.State === 'running';
-          const dot = running ? '🟢' : '🔴';
-          return '<tr style="border-bottom:1px solid var(--border);">' +
-            '<td style="padding:6px;">' + dot + ' ' + (c.Names || '') + '</td>' +
-            '<td style="padding:6px;color:var(--text-secondary);max-width:200px;overflow:hidden;text-overflow:ellipsis;">' + (c.Image || '') + '</td>' +
-            '<td style="padding:6px;color:var(--text-secondary);">' + (c.Status || '') + '</td>' +
-            '<td style="padding:6px;color:var(--text-muted);font-size:11px;">' + (c.Ports || '-') + '</td>' +
-            '<td style="padding:6px;text-align:center;">' +
-            (running
-              ? '<button onclick="dockerAction(\'stop\',\'' + (c.Names||'') + '\')" style="padding:3px 8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:4px;color:var(--red);cursor:pointer;font-size:11px;margin-right:4px;">Stop</button>' +
-                '<button onclick="dockerAction(\'restart\',\'' + (c.Names||'') + '\')" style="padding:3px 8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:4px;color:var(--yellow);cursor:pointer;font-size:11px;">Restart</button>'
-              : '<button onclick="dockerAction(\'start\',\'' + (c.Names||'') + '\')" style="padding:3px 8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:4px;color:var(--green);cursor:pointer;font-size:11px;">Start</button>') +
-            '</td></tr>';
-        }).join('') + '</table>';
-    } else { ce.innerHTML = '<div style="color:var(--text-muted);font-size:13px;">No containers found</div>'; }
-
-    const ie = document.getElementById('dockerImages');
-    if (data.images && data.images.length) {
-      ie.innerHTML = '<table style="width:100%;font-size:12px;border-collapse:collapse;">' +
-        '<tr style="border-bottom:1px solid var(--border);"><th style="text-align:left;padding:6px;">Repository</th><th style="text-align:left;padding:6px;">Tag</th><th style="text-align:left;padding:6px;">Size</th></tr>' +
-        data.images.map(i => '<tr style="border-bottom:1px solid var(--border);">' +
-          '<td style="padding:6px;">' + (i.Repository || '') + '</td>' +
-          '<td style="padding:6px;color:var(--text-secondary);">' + (i.Tag || '') + '</td>' +
-          '<td style="padding:6px;color:var(--text-muted);">' + (i.Size || '') + '</td></tr>'
-        ).join('') + '</table>';
-    } else { ie.innerHTML = '<div style="color:var(--text-muted);font-size:13px;">No images found</div>'; }
-
-    document.getElementById('dockerSystem').textContent = data.system || 'N/A';
-  } catch(e) { showToast('Docker fetch error: ' + e.message, 'warning'); }
 }
 
 const notifIcons = {
@@ -5678,21 +5488,6 @@ document.addEventListener('click', (e) => {
   if (panel.style.display === 'flex' && !panel.contains(e.target) && !bell.contains(e.target)) panel.style.display = 'none';
 });
 
-async function dockerAction(action, id) {
-  const label = action === 'prune-containers' ? 'prune stopped containers' : action === 'prune-images' ? 'prune unused images' : action + ' ' + id;
-  if (!confirm('Run: ' + label + '?')) return;
-  try {
-    const res = await authFetch(API_BASE + '/api/docker/action', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action, id })
-    });
-    const data = await res.json();
-    if (data.error) { showToast('Error: ' + data.error, 'warning'); return; }
-    showToast(label + ' done', 'success');
-    loadDocker();
-  } catch(e) { showToast('Error: ' + e.message, 'warning'); }
-}
 </script>
 </body>
 </html>

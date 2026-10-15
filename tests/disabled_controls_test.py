@@ -21,7 +21,7 @@ def main():
         root = Path(directory)
         (root / "data").mkdir()
         (root / "openclaw").mkdir()
-        for name in ("server.js", "index.html"):
+        for name in ("server.js", "index.html", "cron-reader.js"):
             shutil.copy2(args.repository / name, root / name)
         config = root / "config.json"
         initial = b'{"synthetic":true}'
